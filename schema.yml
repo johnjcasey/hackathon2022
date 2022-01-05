@@ -1,0 +1,13 @@
+---
+className: "CrossLanguageTransform"
+classPath: "sampletransform.CrossLanguageTransform"
+constructorName: "sampletransform.CrossLanguageTransform"
+isConstructorStatic: false
+constructorArgs:
+- type: "int"
+  argumentName: "maxLength"
+configurers:
+- configurerName: "withMinLength"
+  argument:
+    type: "class java.lang.Integer"
+    argumentName: "minLength"
