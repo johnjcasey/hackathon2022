@@ -10,8 +10,9 @@ public class CrossLanguageTransform extends PTransform<PCollection<String>, PCol
   private final Integer maxLength;
   private Integer minLength;
 
-  public CrossLanguageTransform(int maxLength){
-    this.maxLength = maxLength;
+  public CrossLanguageTransform(LengthConfig lengthConfig){
+    this.maxLength = lengthConfig.maxLength;
+    this.minLength = lengthConfig.minLength;
   }
 
   public CrossLanguageTransform withMinLength(Integer minLength){
@@ -29,4 +30,8 @@ public class CrossLanguageTransform extends PTransform<PCollection<String>, PCol
         input.length() <= maxLength && (null == minLength || input.length() >= minLength);
   }
 
+  public static class LengthConfig{
+    public int maxLength;
+    public int minLength;
+  }
 }

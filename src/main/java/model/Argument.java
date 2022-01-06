@@ -1,14 +1,19 @@
 package model;
 
 public class Argument{
-  public String type;
+  public Class<?> type;
   public String argumentName;
+  public String renderAs;
 
-  public String getType() {
+  public Class<?> getType() {
     return type;
   }
 
   public String getArgumentName() {
     return argumentName;
+  }
+
+  public String getRenderAs() {
+    return renderAs;
   }
 }

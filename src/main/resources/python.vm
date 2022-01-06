@@ -1,43 +1,64 @@
 from apache_beam.transforms.external import JavaExternalTransform
 from apache_beam.transforms import PTransform
+import numpy
+import typing
 
 class ${schema.className}(PTransform):
 
-  #if ($schema.constructorArgs.size() == 0 && $schema.configurers.size() == 1)
+#if ($schema.constructorArgs.size() == 0 && $schema.configurers.size() == 1)
   def __init__(self, expansion_service):
+    super().__init__()
     self.expansion_service = expansion_service
-  #else
+#else
   def __init__(self,
-                expansion_service,
-              #foreach ($argument in $schema.constructorArgs)
-              ${argument.argumentName}#if($foreach.hasNext), #end #Java Type $argument.type
-              #end
-              #if($schema.configurers.size() >= 1)
-                ,
-                #foreach ($configurer in $schema.configurers)
-                ${configurer.argument.argumentName} = None#if($foreach.hasNext), #end #Java Type $configurer.argument.type
-                #end
-              #end
+               expansion_service,
+#foreach ($argument in $schema.constructorArgs)
+               ${argument.argumentName}#if($foreach.hasNext || $schema.configurers.size() >= 1), #end #Java Type $argument.type
+#end
+#if($schema.configurers.size() >= 1)
+#foreach ($configurer in $schema.configurers)
+               ${configurer.argument.argumentName} = None#if($foreach.hasNext), #end #Java Type $configurer.argument.type
+#end
+#end
               ):
-      self.expansion_service = expansion_service
-      #foreach ($argument in $schema.constructorArgs)
-      self.${argument.argumentName} = ${argument.argumentName}
-      #end
-      #foreach ($configurer in $schema.configurers)
-      self.${configurer.argument.argumentName} = ${configurer.argument.argumentName}
-      #end
-  #end
+    super().__init__()
+    self.expansion_service = expansion_service
+#foreach ($argument in $schema.constructorArgs)
+    self.${argument.argumentName} = ${argument.argumentName}
+#end
+#foreach ($configurer in $schema.configurers)
+    self.${configurer.argument.argumentName} = ${configurer.argument.argumentName}
+#end
+#end
 
   def generate_java_transform(self):
     base_transform = (JavaExternalTransform('${schema.classPath}', expansion_service=self.expansion_service))
     constructed_transform = base_transform#if($schema.isConstructorStatic).${schema.constructorName}#end(
-    #foreach($argument in $schema.constructorArgs)
-        self.${argument.argumentName}#if($foreach.hasNext), #end
-    #end
-    )#foreach($configurer in $schema.configurers).${configurer.configurerName}(self.${configurer.argument.argumentName})#end
+#foreach($argument in $schema.constructorArgs)
+    ${argument.renderAs}#if($foreach.hasNext), #end
+
+#end
+    )
+#foreach($configurer in $schema.configurers)
+    if self.${configurer.argument.argumentName} is not None:
+      constructed_transform = constructed_transform.${configurer.configurerName}(${configurer.argument.renderAs})
+#end
+
+    return constructed_transform
 
   def expand(self, pcoll):
-    java_transform = generate_java_transform(self)
+    java_transform = self.generate_java_transform()
     return(
         pcoll
-        | '${schema.className}' >> java_transform
+        | '${schema.className}' >> java_transform)
+
+#foreach($type in $schema.types.entrySet())
+${type.key.getSimpleName()} = typing.NamedTuple(
+'${type.key.getSimpleName()}', [
+#foreach($field in $type.value)
+('${field.name}', ${field.renderAs})#if($foreach.hasNext), #end
+
+#end
+])
+
+#end
