@@ -8,15 +8,14 @@ import org.apache.beam.sdk.values.PCollection;
 public class CrossLanguageTransform extends PTransform<PCollection<String>, PCollection<String>> {
 
   private final Integer maxLength;
-  private Integer minLength;
+  private final Integer minLength;
 
   public CrossLanguageTransform(LengthConfig lengthConfig){
     this.maxLength = lengthConfig.maxLength;
     this.minLength = lengthConfig.minLength;
   }
 
-  public CrossLanguageTransform withMinLength(Integer minLength){
-    this.minLength = minLength;
+  public CrossLanguageTransform withOtherConfig(OtherConfig otherConfig){
     return this;
   }
 
@@ -34,4 +33,14 @@ public class CrossLanguageTransform extends PTransform<PCollection<String>, PCol
     public int maxLength;
     public int minLength;
   }
+
+  public static class NestedConfig{
+    public String string;
+  }
+
+  public static class OtherConfig{
+    public int k;
+    public NestedConfig nestedConfig;
+  }
+
 }

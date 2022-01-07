@@ -16,8 +16,8 @@ class ${schema.className}(PTransform):
                ${argument.argumentName}#if($foreach.hasNext || $schema.configurers.size() >= 1), #end #Java Type $argument.type
 #end
 #if($schema.configurers.size() >= 1)
-#foreach ($configurer in $schema.configurers)
-               ${configurer.argument.argumentName} = None#if($foreach.hasNext), #end #Java Type $configurer.argument.type
+#foreach($argument in $schema.flattenedConfigurerArgs)
+               ${argument.argumentName} = None#if($foreach.hasNext), #end #Java Type $argument.type
 #end
 #end
               ):
@@ -26,8 +26,8 @@ class ${schema.className}(PTransform):
 #foreach ($argument in $schema.constructorArgs)
     self.${argument.argumentName} = ${argument.argumentName}
 #end
-#foreach ($configurer in $schema.configurers)
-    self.${configurer.argument.argumentName} = ${configurer.argument.argumentName}
+#foreach($argument in $schema.flattenedConfigurerArgs)
+    self.${argument.argumentName} = ${argument.argumentName}
 #end
 #end
 
@@ -40,8 +40,19 @@ class ${schema.className}(PTransform):
 #end
     )
 #foreach($configurer in $schema.configurers)
-    if self.${configurer.argument.argumentName} is not None:
-      constructed_transform = constructed_transform.${configurer.configurerName}(${configurer.argument.renderAs})
+    if (
+#foreach($argument in $configurer.arguments)
+        self.${argument.argumentName} is not None#if(${foreach.hasNext}) ||#else
+
+        ):#end
+#end
+
+        constructed_transform = constructed_transform.${configurer.configurerName}(
+#foreach($argument in $configurer.arguments)
+            ${argument.renderAs}#if(${foreach.hasNext}),#end
+#end
+
+        )
 #end
 
     return constructed_transform

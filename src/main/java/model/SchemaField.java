@@ -1,5 +1,7 @@
 package model;
 
+import java.lang.reflect.Type;
+
 public class SchemaField {
   public String name;
   public Class<?> type;

@@ -4,13 +4,13 @@ import java.util.List;
 
 public  class Configurer{
   public String configurerName;
-  public Argument argument;
+  public List<Argument> arguments;
 
   public String getConfigurerName() {
     return configurerName;
   }
 
-  public Argument getArgument() {
-    return argument;
+  public List<Argument> getArguments() {
+    return arguments;
   }
 }

@@ -8,12 +8,24 @@ constructorArgs:
   argumentName: "lengthConfig"
   renderAs: null
 configurers:
-- configurerName: "withMinLength"
-  argument:
-    type: "java.lang.Integer"
-    argumentName: "minLength"
+- configurerName: "withOtherConfig"
+  arguments:
+  - type: "sampletransform.CrossLanguageTransform$OtherConfig"
+    argumentName: "otherConfig"
     renderAs: null
+flattenedConfigurerArgs: null
 types:
+  sampletransform.CrossLanguageTransform$OtherConfig:
+  - name: "k"
+    type: "int"
+    renderAs: null
+  - name: "nestedConfig"
+    type: "sampletransform.CrossLanguageTransform$NestedConfig"
+    renderAs: null
+  sampletransform.CrossLanguageTransform$NestedConfig:
+  - name: "string"
+    type: "java.lang.String"
+    renderAs: null
   sampletransform.CrossLanguageTransform$LengthConfig:
   - name: "maxLength"
     type: "int"

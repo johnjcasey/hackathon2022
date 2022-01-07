@@ -10,6 +10,7 @@ public class Schema {
   public boolean isConstructorStatic;
   public List<Argument> constructorArgs;
   public List<Configurer> configurers;
+  public Map<String,Argument> flattenedConfigurerArgs;
   public Map<Class<?>, List<SchemaField>> types;
 
   public String getClassName() {
@@ -30,6 +31,10 @@ public class Schema {
 
   public List<Configurer> getConfigurers() {
     return configurers;
+  }
+
+  public Map<String,Argument> getFlattenedConfigurerArgs() {
+    return flattenedConfigurerArgs;
   }
 
   public boolean isConstructorStatic() {
