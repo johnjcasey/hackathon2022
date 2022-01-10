@@ -26,7 +26,7 @@ public class CrossLanguageTransform extends PTransform<PCollection<String>, PCol
 
   private SerializableFunction<String,Boolean> checkLength(){
     return input ->
-        input.length() <= maxLength && (null == minLength || input.length() >= minLength);
+        input.length() <= maxLength && input.length() >= minLength;
   }
 
   public static class LengthConfig{
@@ -34,13 +34,8 @@ public class CrossLanguageTransform extends PTransform<PCollection<String>, PCol
     public int minLength;
   }
 
-  public static class NestedConfig{
-    public String string;
-  }
-
   public static class OtherConfig{
-    public int k;
-    public NestedConfig nestedConfig;
+    public String k;
   }
 
 }

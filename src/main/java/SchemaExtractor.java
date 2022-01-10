@@ -94,9 +94,6 @@ public class SchemaExtractor {
         })
     );
 
-    schema.flattenedConfigurerArgs = new HashMap<String,Argument>();
-
-
     //Generate python renderings
     schema.types.forEach((key, value) -> value.forEach(sf -> {
       if (sf.type == String.class) {
